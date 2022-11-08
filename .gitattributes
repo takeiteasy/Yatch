@@ -1,0 +1,2 @@
+*.pbxproj binary -merge=union
+*.h linguist-language=objc

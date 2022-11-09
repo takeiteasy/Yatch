@@ -40,11 +40,11 @@ enum eventType {
     motionCancelled
 };
 
-#define MAXDICE 5
+#define FIVE 5
 
 @interface GameScene : SKScene <SKPhysicsContactDelegate> {
     Spritesheet *diceAtlas;
-    Die *dice[MAXDICE], *diceSelected[MAXDICE];
+    Die *dice[FIVE], *diceSelected[FIVE];
     SKSpriteNode *cup, *nextRollBtn, *scorecardBtn;
     SKShapeNode *scorecardCard, *scorecardBoxes[nScoreNames * 2];
     SKLabelNode *scorecardLabels[nScoreNames * 2];

@@ -19,9 +19,9 @@ static float lerp(float a, float b, float f) {
 }
 
 static enum stateCode transitions[] = {
-    preroll,
-    rolling,
-    selecting
+#define X(a) a,
+    STATES
+#undef X
 };
 static int nTransitions = sizeof(transitions) / sizeof(transitions[0]);
 
@@ -97,7 +97,7 @@ static NSString* rndSfx(char t, int max) {
             [scorecardBoxes[i] setStrokeColor:[UIColor blackColor]];
             [scorecardBoxes[i] setLineWidth:1];
             [scorecardBoxes[i] setAlpha:0.f];
-            [self addChild:scorecardBoxes[i]];
+//            [self addChild:scorecardBoxes[i]];
             
             scorecardLabels[i] = [SKLabelNode labelNodeWithText:scoreNames[nScoreNames - 1 - i]];
             [scorecardLabels[i] setFontColor:[UIColor blackColor]];
@@ -112,7 +112,7 @@ static NSString* rndSfx(char t, int max) {
             [scorecardBoxes[i] setLineWidth:0];
             [scorecardBoxes[i] setFillColor:[UIColor blackColor]];
             [scorecardBoxes[i] setAlpha:0.f];
-            [self addChild:scorecardBoxes[i]];
+//            [self addChild:scorecardBoxes[i]];
             
             scorecardLabels[i] = [SKLabelNode labelNodeWithFontNamed:@"AvenirNext-Bold"];
             [scorecardLabels[i] setText:@""];
@@ -130,7 +130,7 @@ static NSString* rndSfx(char t, int max) {
     }
     scorecardVisible = NO;
     
-    for (int i = 0; i < MAXDICE; ++i)
+    for (int i = 0; i < FIVE; ++i)
         diceSelected[i] = nil;
     nSelectedDice = turn = 0;
     state = preroll;
@@ -239,8 +239,10 @@ static NSString* rndSfx(char t, int max) {
 }
 
 -(BOOL)rollingInitFunc {
-    CGSize dieSize = CGSizeMake(16.f * DIESCALE, 16.f * DIESCALE);
-    for (int i = 0; i < MAXDICE; ++i) {
+    const CGSize dieSize = CGSizeMake(16.f * DIESCALE, 16.f * DIESCALE);
+    for (int i = 0; i < FIVE; ++i) {
+        if (dice[i])
+            continue;
         dice[i] = [[Die alloc] initWithPosition:CGPointMake(0.f, 0.f)
                                     andVelocity:CGVectorMake(0.f, 0.f)
                                         andSize:dieSize
@@ -319,7 +321,7 @@ static NSString* rndSfx(char t, int max) {
 
 -(NSArray*)sortedDice {
     return [[NSMutableArray arrayWithObjects:dice
-                                       count:MAXDICE] sortedArrayUsingDescriptors: @[[[NSSortDescriptor alloc] initWithKey:@"value"
+                                       count:FIVE] sortedArrayUsingDescriptors: @[[[NSSortDescriptor alloc] initWithKey:@"value"
                                                                                                                  ascending:YES]]];
 }
 
@@ -328,7 +330,7 @@ static NSString* rndSfx(char t, int max) {
     switch (hand) {
 #define SUMOF(n) \
         case n: \
-            for (int i = 0; i < MAXDICE; i++) \
+            for (int i = 0; i < FIVE; i++) \
                 if ([dice[i] value] == (n + 1)) \
                     score += (n + 1); \
             break;
@@ -339,13 +341,13 @@ static NSString* rndSfx(char t, int max) {
         SUMOF(4) // Fives
         SUMOF(5) // Sixes
         case 6: // Choice
-            for (int i = 0; i < MAXDICE; i++)
+            for (int i = 0; i < FIVE; i++)
                 score += [dice[i] value];
             break;
         case 7: // Four of a kind
-            for (int i = 0; i < MAXDICE; i++) {
+            for (int i = 0; i < FIVE; i++) {
                 int v = [dice[i] value], n = 1, o = 0;
-                for (int j = 0; j < MAXDICE; j++) {
+                for (int j = 0; j < FIVE; j++) {
                     if (i == j)
                         break;
                     if ([dice[j] value] == v)
@@ -353,13 +355,15 @@ static NSString* rndSfx(char t, int max) {
                     else
                         o = [dice[j] value];
                 }
-                if (n >= 4)
-                    return (n * v) + o;
+                if (n >= 4) {
+                    score = (n * v) + o;
+                    break;
+                }
             }
             break;
         case 8: { // Full house
             NSMutableDictionary *d = [NSMutableDictionary dictionary];
-            for (int i = 0; i < MAXDICE; i++) {
+            for (int i = 0; i < FIVE; i++) {
                 NSString *key = [@([dice[i] value]) stringValue];
                 if ([d objectForKey:key])
                     d[key] = @([d[key] intValue] + 1);
@@ -367,14 +371,14 @@ static NSString* rndSfx(char t, int max) {
                     d[key] = @1;
             }
             if ([[d allKeys] count] < 3)
-                for (int i = 0; i < MAXDICE; i++)
+                for (int i = 0; i < FIVE; i++)
                     score += [dice[i] value];
             break;
         }
         case 9: { // Small straight
             NSArray *sorted = [self sortedDice];
             BOOL y = YES;
-            for (int i = 0, j = 1; i < MAXDICE; i++, j++)
+            for (int i = 0, j = 1; i < FIVE; i++, j++)
                 if ([(Die*)sorted[i] value] != j) {
                     y = NO;
                     break;
@@ -386,7 +390,7 @@ static NSString* rndSfx(char t, int max) {
         case 10: { // Large straight
             NSArray *sorted = [self sortedDice];
             BOOL y = YES;
-            for (int i = 0, j = 2; i < MAXDICE; i++, j++)
+            for (int i = 0, j = 2; i < FIVE; i++, j++)
                 if ([(Die*)sorted[i] value] != j) {
                     y = NO;
                     break;
@@ -398,7 +402,7 @@ static NSString* rndSfx(char t, int max) {
         case 11: { // Yatch
             int v = [dice[0] value];
             BOOL y = YES;
-            for (int i = 1; i < MAXDICE; i++)
+            for (int i = 1; i < FIVE; i++)
                 if ([dice[i] value] != v) {
                     y = NO;
                     break;
@@ -477,10 +481,29 @@ static NSString* rndSfx(char t, int max) {
             }
             
             if ([nextRollBtn containsPoint:[t locationInNode:self]]) {
+                [self hideScorecard];
+                [nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];
+                for (int i = 0; i < FIVE; i++) {
+                    if (![dice[i] selected]) {
+                        [dice[i] runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
+                            self->dice[i].physicsBody.categoryBitMask = 0;
+                            self->dice[i].physicsBody.contactTestBitMask = 0;
+                            self->dice[i].physicsBody.collisionBitMask = 0;
+                            self->dice[i].physicsBody = nil;
+                            self->dice[i] = nil;
+                        }];
+                    }
+                }
+                [cup setPosition:CGPointMake(0, 0)];
+                [cup setZRotation:0];
+                [scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
+                    self->turn++;
+                    self->nextStateFlag = YES;
+                }];
                 break;
             }
             
-            for (int i = 0; i < MAXDICE; ++i) {
+            for (int i = 0; i < FIVE; ++i) {
                 if (![dice[i] containsPoint:[t locationInNode:self]])
                     continue;
                 static const float speed = .1f;
@@ -489,7 +512,7 @@ static NSString* rndSfx(char t, int max) {
                                                     duration:speed]];
                     [dice[i] enable];
                     [dice[i] setSelected:NO];
-                    for (int j = 0; j < MAXDICE; ++j)
+                    for (int j = 0; j < FIVE; ++j)
                         if (diceSelected[j] == dice[i]) {
                             diceSelected[j] = nil;
                             break;
@@ -501,7 +524,7 @@ static NSString* rndSfx(char t, int max) {
                     static const float inc = offset / 2.5f;
                     
                     int j = 0;
-                    for (; j < MAXDICE; ++j)
+                    for (; j < FIVE; ++j)
                         if (!diceSelected[j]) {
                             diceSelected[j] = dice[i];
                             break;
@@ -561,14 +584,14 @@ static NSString* rndSfx(char t, int max) {
     static float tickDelay = 0.f;
     
     if (delayCounter > tickDelay) {
-        for (int i = 0; i < MAXDICE; ++i)
+        for (int i = 0; i < FIVE; ++i)
             [dice[i] setTexture:[diceAtlas getClip:6 + dieRoll()]];
         tickDelay = lerp(0.f, .25f, tickCounter / maxTime);
         delayCounter = 0.f;
     }
     
     if (tickCounter >= maxTime) {
-        for (int i = 0; i < MAXDICE; ++i) {
+        for (int i = 0; i < FIVE; ++i) {
             int v = dieRoll();
             [dice[i] setTexture:[diceAtlas getClip:v]];
             [dice[i] setValue:v + 1];
@@ -587,7 +610,12 @@ static NSString* rndSfx(char t, int max) {
 }
 
 -(enum retCode)selectingUpdateFunc:(CFTimeInterval)t {
-    return repeat;
+    enum retCode ret = repeat;
+    if (nextStateFlag) {
+        ret = ok;
+        nextStateFlag = NO;
+    }
+    return ret;
 }
 
 -(void)update:(CFTimeInterval)currentTime {

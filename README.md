@@ -1,6 +1,6 @@
 # Yatch
 
-An iOS Yatch dice game using SpriteKit. [Poker Dice](https://en.wikipedia.org/wiki/Yacht_(dice_game), similar to Yatzee.
+An iOS Yatch dice game using SpriteKit. [Poker Dice](https://en.wikipedia.org/wiki/Yacht_(dice_game)), similar to Yatzee. Rules are based off [Clubhouse Games for Switch](https://www.nintendo.com/store/products/clubhouse-games-51-worldwide-classics-switch/). Designed for iPhone. WIP.
 
 ## Assets
 

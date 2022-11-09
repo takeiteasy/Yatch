@@ -10,6 +10,8 @@
 
 @interface Die : SKSpriteNode
 @property BOOL selected;
+@property int value;
+
 -(id)initWithPosition:(CGPoint)pos andVelocity:(CGVector)vel andSize:(CGSize)size andMass:(float)mass;
 -(void)enable;
 -(void)disable;

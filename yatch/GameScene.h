@@ -50,21 +50,17 @@ enum eventType {
     SKLabelNode *scorecardLabels[nScoreNames * 2];
     SKShapeNode *boundaries;
     Scorecard *scorecard;
+    BOOL scorecardVisible;
     CFTimeInterval lastTimeInterval;
     enum stateCode state;
     BOOL nextStateFlag, blockActions;
     NSMutableArray *contactQueue;
     int nSelectedDice, turn;
 }
--(void)startCupShake;
--(void)stopCupShake;
--(void)updateScorecard:(Scorecard*)sc;
--(void)showScorecard;
--(void)hideScorecard;
 #define X(a) \
-    -(BOOL)a##InitFunc; \
-    -(BOOL)a##InputFunc:(UITouch*)t withEvent:(UIEvent*)e withType:(enum eventType)tt; \
-    -(enum retCode)a##UpdateFunc:(CFTimeInterval)t;
+-(BOOL)a##InitFunc; \
+-(BOOL)a##InputFunc:(UITouch*)t withEvent:(UIEvent*)e withType:(enum eventType)tt; \
+-(enum retCode)a##UpdateFunc:(CFTimeInterval)t;
 STATES
 #undef X
 @end

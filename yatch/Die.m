@@ -14,6 +14,7 @@ static float rndFloatRange(float min, float max) {
 
 @implementation Die
 @synthesize selected;
+@synthesize value;
 
 -(id)initWithPosition:(CGPoint)pos andVelocity:(CGVector)vel andSize:(CGSize)size andMass:(float)mass {
     if (self == [super init]) {

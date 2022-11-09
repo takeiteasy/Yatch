@@ -13,16 +13,26 @@
     if (self == [super init]) {
         scores = [NSMapTable mapTableWithKeyOptions:NSMapTableCopyIn
                                        valueOptions:NSMapTableStrongMemory];
-        for (int i = 0; i < nScoreNames; ++i)
-            [scores setObject:[NSNumber numberWithInt:-1] forKey:scoreNames[i]];
-        
-        bonusAchieved = NO;
-        scoreTotal = 0;
+        [self reset];
     }
     return self;
     
 }
 -(int)getScore:(NSString*)name {
     return [[scores objectForKey:name] intValue];
+}
+
+-(void)setScore:(NSString*)name withValue:(int)v {
+    [scores setObject:[NSNumber numberWithInt:v] forKey:name];
+    scoreTotal = 0;
+    for (int i = 0; i < nScoreNames; i++)
+        scoreTotal += [[scores objectForKey:scoreNames[i]] intValue];
+}
+
+-(void)reset {
+    for (int i = 0; i < nScoreNames; ++i)
+        [scores setObject:@-1 forKey:scoreNames[i]];
+    bonusAchieved = NO;
+    scoreTotal = 0;
 }
 @end

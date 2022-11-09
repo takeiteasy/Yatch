@@ -49,7 +49,7 @@ enum eventType {
     SKShapeNode *scorecardCard, *scorecardBoxes[nScoreNames * 2];
     SKLabelNode *scorecardLabels[nScoreNames * 2];
     SKShapeNode *boundaries;
-    Scorecard *scorecard;
+    Scorecard *scorecard, *hiddenScorecard;
     BOOL scorecardVisible;
     CFTimeInterval lastTimeInterval;
     enum stateCode state;

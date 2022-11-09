@@ -23,13 +23,15 @@
         clips = [[NSMutableArray alloc] init];
         float dx = size.width / [original size].width;
         for (int x = 0; x < nClips; ++x)
-            [clips addObject:[SKTexture textureWithRect:CGRectMake(x * dx, 0, dx, 1) inTexture:original]];
+            [clips addObject:[SKTexture textureWithRect:CGRectMake(x * dx, 0, dx, 1)
+                                              inTexture:original]];
     }
     return self;
 }
 
 -(id)initWithTextureNamed:(NSString*)name Width:(NSInteger)width {
-    return [self initWithTexture:[SKTexture textureWithImageNamed:name] Width:width];
+    return [self initWithTexture:[SKTexture textureWithImageNamed:name]
+                           Width:width];
 }
 
 -(SKTexture*)getClip:(NSInteger)n {

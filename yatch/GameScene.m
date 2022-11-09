@@ -78,6 +78,7 @@ static NSString* rndSfx(char t, int max) {
     [self addChild:scorecardBtn];
     
     scorecard = [[Scorecard alloc] init];
+    hiddenScorecard = [[Scorecard alloc] init];
     const int boxHeight = 40.f;
     const int boxWidth = boxHeight * M_PHI;
     int cardHeight = boxHeight * nScoreNames + ((nScoreNames + 1) * 20);
@@ -279,7 +280,7 @@ static NSString* rndSfx(char t, int max) {
     [cup setPosition:CGPointMake(0.f, 0.f)];
     [nextRollBtn runAction:[SKAction fadeInWithDuration:.5f]];
     [scorecardBtn runAction:[SKAction fadeInWithDuration:.5f]];
-    [self updateScorecard:scorecard];
+    [self updateScorecard];
     [self showScorecard];
     return YES;
 }
@@ -322,7 +323,7 @@ static NSString* rndSfx(char t, int max) {
 -(NSArray*)sortedDice {
     return [[NSMutableArray arrayWithObjects:dice
                                        count:FIVE] sortedArrayUsingDescriptors: @[[[NSSortDescriptor alloc] initWithKey:@"value"
-                                                                                                                 ascending:YES]]];
+                                                                                                              ascending:YES]]];
 }
 
 -(int)calcScore:(int)hand {
@@ -370,9 +371,28 @@ static NSString* rndSfx(char t, int max) {
                 else
                     d[key] = @1;
             }
-            if ([[d allKeys] count] < 3)
-                for (int i = 0; i < FIVE; i++)
-                    score += [dice[i] value];
+            switch ([[d allKeys] count]) {
+                case 1:
+                    for (int i = 0; i < FIVE; i++)
+                        score += [dice[i] value];
+                    break;
+                case 2: {
+                    BOOL y = YES;
+                    for (id key in d) {
+                        int v = [[d objectForKey:key] intValue];
+                        if (v == 4 || v == 1) {
+                            y = NO;
+                            break;
+                        }
+                    }
+                    if (y)
+                        for (int i = 0; i < FIVE; i++)
+                            score += [dice[i] value];
+                    break;
+                }
+                default:
+                    break;
+            }
             break;
         }
         case 9: { // Small straight
@@ -417,15 +437,17 @@ static NSString* rndSfx(char t, int max) {
     return score;
 }
 
--(void)updateScorecard:(Scorecard*)sc {
+-(void)updateScorecard {
     for (int i = 0; i < nScoreNames; ++i) {
-        int v = [sc getScore:[scorecardLabels[i] text]];
+        int v = [scorecard getScore:[scorecardLabels[i] text]];
         if (v > -1) {
             [scorecardLabels[nScoreNames + i] setFontColor:[UIColor blackColor]];
             [scorecardLabels[nScoreNames + i] setText:[NSString stringWithFormat:@"%d", v]];
         } else {
+            v = [self calcScore:i];
+            [hiddenScorecard setScore:scoreNames[i] withValue:v];
             [scorecardLabels[nScoreNames + i] setFontColor:[UIColor grayColor]];
-            [scorecardLabels[nScoreNames + i] setText:[NSString stringWithFormat:@"%d", [self calcScore:i]]];
+            [scorecardLabels[nScoreNames + i] setText:[NSString stringWithFormat:@"%d", v]];
         }
     }
 }
@@ -434,6 +456,12 @@ static NSString* rndSfx(char t, int max) {
     switch ([e subtype]) {
         case UIEventSubtypeMotionShake:
             switch (tt) {
+                case touchBegan:
+                case touchMoved:
+                case touchEnded:
+                case touchCancelled:
+                case motionCancelled:
+                    break;
                 case motionBegan: {
                     if (blockActions)
                         break;
@@ -459,6 +487,13 @@ static NSString* rndSfx(char t, int max) {
                         }];
                     }
                     break;
+                case touchMoved:
+                case touchEnded:
+                case touchCancelled:
+                case motionBegan:
+                case motionEnded:
+                case motionCancelled:
+                    break;
             }
             break;
     }
@@ -471,6 +506,13 @@ static NSString* rndSfx(char t, int max) {
 
 -(BOOL)selectingInputFunc:(UITouch*)t withEvent:(UIEvent*)e withType:(enum eventType)tt {
     switch (tt) {
+        case touchBegan:
+        case touchMoved:
+        case touchCancelled:
+        case motionBegan:
+        case motionEnded:
+        case motionCancelled:
+            break;
         case touchEnded:
             if ([scorecardBtn containsPoint:[t locationInNode:self]]) {
                 if (scorecardVisible)
@@ -481,14 +523,15 @@ static NSString* rndSfx(char t, int max) {
             }
             
             if ([nextRollBtn containsPoint:[t locationInNode:self]]) {
-                [self hideScorecard];
+                if (scorecardVisible)
+                    [self hideScorecard];
                 [nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];
                 for (int i = 0; i < FIVE; i++) {
                     if (![dice[i] selected]) {
                         [dice[i] runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
-                            self->dice[i].physicsBody.categoryBitMask = 0;
-                            self->dice[i].physicsBody.contactTestBitMask = 0;
-                            self->dice[i].physicsBody.collisionBitMask = 0;
+//                            self->dice[i].physicsBody.categoryBitMask = 0;
+//                            self->dice[i].physicsBody.contactTestBitMask = 0;
+//                            self->dice[i].physicsBody.collisionBitMask = 0;
                             self->dice[i].physicsBody = nil;
                             self->dice[i] = nil;
                         }];
@@ -496,6 +539,7 @@ static NSString* rndSfx(char t, int max) {
                 }
                 [cup setPosition:CGPointMake(0, 0)];
                 [cup setZRotation:0];
+                [hiddenScorecard reset];
                 [scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
                     self->turn++;
                     self->nextStateFlag = YES;
@@ -529,8 +573,7 @@ static NSString* rndSfx(char t, int max) {
                             diceSelected[j] = dice[i];
                             break;
                         }
-                    [dice[i] runAction:[SKAction moveTo:CGPointMake(DIEPOSX(j),
-                                                                    [[UIScreen mainScreen] bounds].size.height / 1.5f)
+                    [dice[i] runAction:[SKAction moveTo:CGPointMake(DIEPOSX(j), [[UIScreen mainScreen] bounds].size.height / 1.5f)
                                                duration:speed]];
                     [dice[i] runAction:[SKAction scaleBy:1.5f
                                                 duration:speed]];
@@ -539,6 +582,7 @@ static NSString* rndSfx(char t, int max) {
                     [dice[i] disable];
                     nSelectedDice++;
                 }
+                break;
             }
             break;
     }
@@ -585,17 +629,21 @@ static NSString* rndSfx(char t, int max) {
     
     if (delayCounter > tickDelay) {
         for (int i = 0; i < FIVE; ++i)
-            [dice[i] setTexture:[diceAtlas getClip:6 + dieRoll()]];
+            if (![dice[i] selected])
+                [dice[i] setTexture:[diceAtlas getClip:6 + dieRoll()]];
         tickDelay = lerp(0.f, .25f, tickCounter / maxTime);
         delayCounter = 0.f;
     }
     
     if (tickCounter >= maxTime) {
         for (int i = 0; i < FIVE; ++i) {
+            if ([dice[i] selected])
+                continue;
             int v = dieRoll();
             [dice[i] setTexture:[diceAtlas getClip:v]];
             [dice[i] setValue:v + 1];
         }
+        tickCounter = delayCounter = tickDelay = 0.f;
         return ok;
     }
     

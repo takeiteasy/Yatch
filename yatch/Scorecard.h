@@ -33,6 +33,8 @@ static NSString* _Nonnull  scoreNames[nScoreNames] = {
 }
 -(id)init;
 -(int)getScore:(NSString*)name;
+-(void)setScore:(NSString*)name withValue:(int)v;
+-(void)reset;
 @end
 
 NS_ASSUME_NONNULL_END

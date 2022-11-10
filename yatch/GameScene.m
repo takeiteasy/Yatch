@@ -255,7 +255,8 @@ static NSString* rndSfx(char t, int max) {
 #pragma end mark
 
 -(BOOL)prerollInitFunc {
-    [cup runAction:[SKAction fadeInWithDuration:.5f]];
+    if (![scorecard isFull])
+        [cup runAction:[SKAction fadeInWithDuration:.5f]];
     return YES;
 }
 
@@ -492,22 +493,27 @@ static NSString* rndSfx(char t, int max) {
                 case motionCancelled:
                     break;
                 case motionBegan: {
-                    if (blockActions)
+                    if ([scorecard isFull] || blockActions)
                         break;
                     blockActions = YES;
                     [self startCupShake];
                     break;
                 }
                 case motionEnded:
-                    [self stopCupShake];
+                    if (![scorecard isFull] && !blockActions)
+                        [self stopCupShake];
                     break;
             }
             break;
         default:
             switch (tt) {
                 case touchBegan:
-                    if (blockActions)
+                    if (blockActions) {
+                        if (![scorecard isFull])
+                            break;
+                        // go back to menu
                         break;
+                    }
                     if ([cup containsPoint:[t locationInNode:self]]) {
                         blockActions = YES;
                         [self startCupShake];
@@ -636,7 +642,13 @@ static NSString* rndSfx(char t, int max) {
                         self->dice[i] = nil;
                     }];
                 }
-                [self hideScorecard];
+                if (![scorecard isFull])
+                    [self hideScorecard];
+                else {
+                    blockActions = YES;
+                    [turnLabel setText:@"Final score!"];
+                    [self updateScorecard];
+                }
                 [cup setPosition:CGPointMake(0, 0)];
                 [cup setZRotation:0];
                 [nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];

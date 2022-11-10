@@ -25,17 +25,23 @@
 -(void)setScore:(NSString*)name withValue:(int)v {
     [scores setObject:[NSNumber numberWithInt:v] forKey:name];
     _scoreTotal = 0;
+    int j = 0;
     for (int i = 0; i < nScoreNames; i++) {
         int v = [[scores objectForKey:scoreNames[i]] intValue];
-        if (v != -1)
+        if (v != -1) {
             _scoreTotal += v;
+            j++;
+        }
     }
+    if (j == nScoreNames)
+        _isFull = YES;
 }
 
 -(void)reset {
     for (int i = 0; i < nScoreNames; ++i)
         [scores setObject:@-1 forKey:scoreNames[i]];
     _bonusAchieved = NO;
+    _isFull = NO;
     _scoreTotal = 0;
 }
 @end

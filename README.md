@@ -2,9 +2,23 @@
 
 An iOS Yatch dice game using SpriteKit. [Poker Dice](https://en.wikipedia.org/wiki/Yacht_(dice_game)), similar to Yatzee. Rules are based off [Clubhouse Games for Switch](https://www.nintendo.com/store/products/clubhouse-games-51-worldwide-classics-switch/). Designed for iPhone. WIP.
 
+<p align="center">
+    <img src="https://github.com/takeiteasy/Yatch/blob/master/screenshot.png?raw=true">
+</p>
+
 ## Assets
 
-TODO
+ - Dice sprites - [kicked-in-teeth](https://kicked-in-teeth.itch.io/dice-roll) (CC-by-sa)
+ - Notepad + Pencil icon - [vectorpixelstar](https://vectorpixelstar.itch.io/1-bit-icons-part-2) (CC BY-ND 4.0)
+ - Everything else made by myself
+ 
+## TODO
+
+- [ ] Bonus score (63 points in 1-6 categories)
+- [ ] Menu scene
+- [ ] Highscore
+- [ ] More sound effects
+- [ ] Maybe a background
 
 ## License
 ```

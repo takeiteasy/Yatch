@@ -558,6 +558,7 @@ static NSString* rndSfx(char t, int max) {
 //                            self->dice[i].physicsBody.contactTestBitMask = 0;
 //                            self->dice[i].physicsBody.collisionBitMask = 0;
                             self->dice[i].physicsBody = nil;
+                            [self->dice[i] removeFromParent];
                             self->dice[i] = nil;
                         }];
                     }

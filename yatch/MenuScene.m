@@ -10,6 +10,8 @@
 
 @implementation MenuScene
 -(void)didMoveToView:(SKView *)view {
+    // [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
+    
     title = [SKLabelNode labelNodeWithFontNamed:@"AvenirNext-Bold"];
     [title setText:@"Yatch!"];
     [title setFontSize:72.f];
@@ -38,8 +40,9 @@
         [SKAction fadeInWithDuration:1.f]
     ]]];
     
+    NSInteger highscore = [[NSUserDefaults standardUserDefaults] integerForKey:@"highscore"];
     highscoreLabel = [SKLabelNode labelNodeWithFontNamed:@"AvenirNext-Bold"];
-    [highscoreLabel setText:[NSString stringWithFormat:@"Highscore: %d", 0]];
+    [highscoreLabel setText:[NSString stringWithFormat:@"High Score: %ld", (long)highscore]];
     [highscoreLabel setPosition:CGPointMake(0.f, -200.f)];
     [highscoreLabel setAlpha:0.f];
     [self addChild:highscoreLabel];

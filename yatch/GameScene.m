@@ -647,6 +647,11 @@ static NSString* rndSfx(char t, int max) {
                 if (![scorecard isFull])
                     [self hideScorecard];
                 else {
+                    int highscore = [[[NSUserDefaults standardUserDefaults] stringForKey:@"highscore"] intValue];
+                    if ([scorecard scoreTotal] > highscore) {
+                        [[NSUserDefaults standardUserDefaults] setInteger:[scorecard scoreTotal] forKey:@"highscore"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                    }
                     blockActions = YES;
                     [turnLabel setText:@"Final score!"];
                     [self updateScorecard];

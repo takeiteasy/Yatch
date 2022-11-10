@@ -7,6 +7,7 @@
 //
 
 #import "GameViewController.h"
+#import "MenuScene.h"
 #import "GameScene.h"
 
 @implementation GameViewController
@@ -15,8 +16,9 @@
     [super viewDidLoad];
     [self becomeFirstResponder];
 
+    MenuScene *scene = (MenuScene*)[SKScene nodeWithFileNamed:@"MenuScene"];
     // Load the SKScene from 'GameScene.sks'
-    GameScene *scene = (GameScene*)[SKScene nodeWithFileNamed:@"GameScene"];
+//    GameScene *scene = (GameScene*)[SKScene nodeWithFileNamed:@"GameScene"];
     
     // Set the scale mode to scale to fit the window
     scene.scaleMode = SKSceneScaleModeAspectFill;

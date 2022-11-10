@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5ED8B261291D6B92006EC8AF /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5ED8B260291D6B92006EC8AF /* README.md */; };
+		5ED8B264291D6F2B006EC8AF /* MenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED8B263291D6F2B006EC8AF /* MenuScene.m */; };
+		5ED8B269291D70F0006EC8AF /* MenuScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5ED8B268291D70F0006EC8AF /* MenuScene.sks */; };
 		883F563F2700FDDA001AD463 /* Die.m in Sources */ = {isa = PBXBuildFile; fileRef = 883F563E2700FDDA001AD463 /* Die.m */; };
 		889D36CF272E8E2F00953B8F /* Scorecard.m in Sources */ = {isa = PBXBuildFile; fileRef = 889D36CE272E8E2F00953B8F /* Scorecard.m */; };
 		88AF2E5126F71E0000E5F0A6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AF2E5026F71E0000E5F0A6 /* AppDelegate.m */; };
@@ -24,6 +26,9 @@
 
 /* Begin PBXFileReference section */
 		5ED8B260291D6B92006EC8AF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		5ED8B263291D6F2B006EC8AF /* MenuScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuScene.m; sourceTree = "<group>"; };
+		5ED8B265291D6F36006EC8AF /* MenuScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuScene.h; sourceTree = "<group>"; };
+		5ED8B268291D70F0006EC8AF /* MenuScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MenuScene.sks; sourceTree = "<group>"; };
 		883F563D2700FDDA001AD463 /* Die.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Die.h; sourceTree = "<group>"; };
 		883F563E2700FDDA001AD463 /* Die.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Die.m; sourceTree = "<group>"; };
 		889D36CD272E8E2F00953B8F /* Scorecard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scorecard.h; sourceTree = "<group>"; };
@@ -88,6 +93,8 @@
 				88AF2E6426F71E0100E5F0A6 /* Info.plist */,
 				889D36CD272E8E2F00953B8F /* Scorecard.h */,
 				889D36CE272E8E2F00953B8F /* Scorecard.m */,
+				5ED8B263291D6F2B006EC8AF /* MenuScene.m */,
+				5ED8B265291D6F36006EC8AF /* MenuScene.h */,
 			);
 			path = yatch;
 			sourceTree = "<group>";
@@ -104,6 +111,7 @@
 				88AF2E5C26F71E0000E5F0A6 /* Main.storyboard */,
 				88AF2E5F26F71E0100E5F0A6 /* Assets.xcassets */,
 				88AF2E6126F71E0100E5F0A6 /* LaunchScreen.storyboard */,
+				5ED8B268291D70F0006EC8AF /* MenuScene.sks */,
 			);
 			path = base;
 			sourceTree = "<group>";
@@ -171,6 +179,7 @@
 				88E1EC17270A3DD8002AD780 /* GameScene.sks in Resources */,
 				88AF2E6026F71E0100E5F0A6 /* Assets.xcassets in Resources */,
 				88AF2E6326F71E0100E5F0A6 /* LaunchScreen.storyboard in Resources */,
+				5ED8B269291D70F0006EC8AF /* MenuScene.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,6 +191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				883F563F2700FDDA001AD463 /* Die.m in Sources */,
+				5ED8B264291D6F2B006EC8AF /* MenuScene.m in Sources */,
 				889D36CF272E8E2F00953B8F /* Scorecard.m in Sources */,
 				88AF2E5826F71E0000E5F0A6 /* GameScene.m in Sources */,
 				88AF2E5B26F71E0000E5F0A6 /* GameViewController.m in Sources */,

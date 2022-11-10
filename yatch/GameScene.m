@@ -91,10 +91,16 @@ static NSString* rndSfx(char t, int max) {
         if (i < nScoreNames) {
             scorecardLabels[i] = [SKLabelNode labelNodeWithText:scoreNames[i]];
             [scorecardLabels[i] setPosition:CGPointMake(rect.origin.x / 2.f, y_off)];
-            y_off -= [scorecardLabels[i] frame].size.height + boxHeight / 2.f;
             [scorecardLabels[i] setFontColor:[UIColor blackColor]];
             [scorecardLabels[i] setAlpha:0.f];
             [self addChild:scorecardLabels[i]];
+            
+            scorecardBoxes[i] = [SKShapeNode shapeNodeWithRect:CGRectMake(rect.origin.x, y_off, rect.size.width, [scorecardLabels[i] frame].size.height)];
+//            [scorecardBoxes[i] setFillColor:[UIColor redColor]];
+            [scorecardBoxes[i] setAlpha:0.f];
+            [self addChild:scorecardBoxes[i]];
+            
+            y_off -= [scorecardLabels[i] frame].size.height + boxHeight / 2.f;
         } else {
             scorecardLabels[i] = [SKLabelNode labelNodeWithFontNamed:@"AvenirNext-Bold"];
             [scorecardLabels[i] setPosition:CGPointMake(-rect.origin.x / 1.25f, [scorecardLabels[i - nScoreNames] position].y)];
@@ -554,9 +560,6 @@ static NSString* rndSfx(char t, int max) {
                 for (int i = 0; i < FIVE; i++) {
                     if (![dice[i] selected]) {
                         [dice[i] runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
-//                            self->dice[i].physicsBody.categoryBitMask = 0;
-//                            self->dice[i].physicsBody.contactTestBitMask = 0;
-//                            self->dice[i].physicsBody.collisionBitMask = 0;
                             self->dice[i].physicsBody = nil;
                             [self->dice[i] removeFromParent];
                             self->dice[i] = nil;
@@ -610,6 +613,36 @@ static NSString* rndSfx(char t, int max) {
                     nSelectedDice++;
                 }
                 break;
+            }
+            
+            for (int i = 0; i < nScoreNames; i++) {
+                if (![scorecardBoxes[i] containsPoint:[t locationInNode:self]])
+                    continue;
+                NSString *name = scoreNames[i];
+                if ([scorecard getScore:name] != -1)
+                    continue;
+                int v = [hiddenScorecard getScore:name];
+                [scorecard setScore:name withValue:v];
+                turn = 0;
+                [turnLabel setText:[NSString stringWithFormat:@"Turn %d", turn + 1]];
+                [totalScoreLabel setText:[NSString stringWithFormat:@"%d", [scorecard scoreTotal]]];
+                for (int i = 0; i < FIVE; i++)
+                    diceSelected[i] = nil;
+                nSelectedDice = 0;
+                for (int i = 0; i < FIVE; i++) {
+                    [dice[i] runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
+                        self->dice[i].physicsBody = nil;
+                        [self->dice[i] removeFromParent];
+                        self->dice[i] = nil;
+                    }];
+                }
+                [self hideScorecard];
+                [cup setPosition:CGPointMake(0, 0)];
+                [cup setZRotation:0];
+                [nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];
+                [scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
+                    self->nextStateFlag = YES;
+                }];
             }
             break;
     }

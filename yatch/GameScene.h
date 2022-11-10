@@ -49,6 +49,7 @@ enum eventType {
     SKLabelNode *scorecardLabels[nScoreNames * 2], *turnLabel;
     SKLabelNode *bonusLabel, *bonusScoreLabel, *totalLabel, *totalScoreLabel;
     SKShapeNode *boundaries, *scorecardCard, *scorecardLine;
+    SKShapeNode *scorecardBoxes[nScoreNames];
     Scorecard *scorecard, *hiddenScorecard;
     BOOL scorecardVisible;
     CFTimeInterval lastTimeInterval;

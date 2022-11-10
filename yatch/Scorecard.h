@@ -28,9 +28,9 @@ static NSString* _Nonnull  scoreNames[nScoreNames] = {
 
 @interface Scorecard : NSObject {
     NSMapTable *scores;
-    BOOL bonusAchieved;
-    int scoreTotal;
 }
+@property BOOL bonusAchieved;
+@property int scoreTotal;
 -(id)init;
 -(int)getScore:(NSString*)name;
 -(void)setScore:(NSString*)name withValue:(int)v;

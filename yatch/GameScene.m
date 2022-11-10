@@ -63,30 +63,31 @@ static NSString* rndSfx(char t, int max) {
     [cup setAlpha:0.f];
     [self addChild:cup];
     
-    nextRollBtn = [SKSpriteNode spriteNodeWithImageNamed:@"next_roll"];
-    [nextRollBtn setScale:DIESCALE];
-    [nextRollBtn setAlpha:0.f];
-    [nextRollBtn setPosition:CGPointMake(-100.f, sz.height / 1.85f)];
-    [self addChild:nextRollBtn];
-    
-    scorecardBtn = [SKSpriteNode spriteNodeWithImageNamed:@"open_scorecard"];
-    [scorecardBtn setScale:DIESCALE];
-    [scorecardBtn setAlpha:0.f];
-    [scorecardBtn setPosition:CGPointMake(100.f, sz.height / 1.85f)];
-    [self addChild:scorecardBtn];
-    
     scorecard = [[Scorecard alloc] init];
     hiddenScorecard = [[Scorecard alloc] init];
     const int boxHeight = 40.f;
     int cardHeight = boxHeight * nScoreNames + ((nScoreNames + 1) * 20);
     float scorecardY = -(cardHeight / 2.f);
+    int y_off = -scorecardY - boxHeight / .75f;
     scorecardCard = [SKShapeNode shapeNodeWithRect:CGRectMake(rect.origin.x, scorecardY, rect.size.width, cardHeight)
                                       cornerRadius:15.f];
     [scorecardCard setFillColor:[UIColor whiteColor]];
     [scorecardCard setAlpha:0.f];
     [self addChild:scorecardCard];
     
-    for (int i = 0, y_off = -scorecardY - boxHeight; i < nScoreNames * 2; ++i) {
+    nextRollBtn = [SKSpriteNode spriteNodeWithImageNamed:@"next_roll"];
+    [nextRollBtn setScale:2.5f];
+    [nextRollBtn setAlpha:0.f];
+    [nextRollBtn setPosition:CGPointMake(-rect.origin.x / 1.5f, -scorecardY + 50.f)];
+    [self addChild:nextRollBtn];
+    
+    scorecardBtn = [SKSpriteNode spriteNodeWithImageNamed:@"open_scorecard"];
+    [scorecardBtn setScale:2.5f];
+    [scorecardBtn setAlpha:0.f];
+    [scorecardBtn setPosition:CGPointMake(-rect.origin.x, -scorecardY + 50.f)];
+    [self addChild:scorecardBtn];
+    
+    for (int i = 0; i < nScoreNames * 2; ++i) {
         if (i < nScoreNames) {
             scorecardLabels[i] = [SKLabelNode labelNodeWithText:scoreNames[i]];
             [scorecardLabels[i] setPosition:CGPointMake(rect.origin.x / 2.f, y_off)];
@@ -104,6 +105,45 @@ static NSString* rndSfx(char t, int max) {
 
         }
     }
+    scorecardLine = [SKShapeNode shapeNodeWithRectOfSize:CGSizeMake(rect.size.width - boxHeight, 1)];
+    [scorecardLine setPosition:CGPointMake(6.f, y_off + boxHeight / 2.5f)];
+    [scorecardLine setLineWidth:0];
+    [scorecardLine setFillColor:[UIColor blackColor]];
+    [scorecardLine setAlpha:0.f];
+    [self addChild:scorecardLine];
+    
+    y_off -= boxHeight;
+    bonusLabel = [SKLabelNode labelNodeWithText:@"Bonus"];
+    [bonusLabel setPosition:CGPointMake(rect.origin.x / 2.f, y_off)];
+    [bonusLabel setFontColor:[UIColor blackColor]];
+    [bonusLabel setAlpha:0.f];
+    [self addChild:bonusLabel];
+    bonusScoreLabel = [SKLabelNode labelNodeWithFontNamed:@"AvenirNext-Bold"];
+    [bonusScoreLabel setText:@"0"];
+    [bonusScoreLabel setPosition:CGPointMake(-rect.origin.x / 1.25f, [bonusLabel position].y)];
+    [bonusScoreLabel setFontColor:[UIColor blackColor]];
+    [bonusScoreLabel setAlpha:0.f];
+    [self addChild:bonusScoreLabel];
+    
+    y_off -= [bonusLabel frame].size.height + boxHeight / 2.f;
+    totalLabel = [SKLabelNode labelNodeWithText:@"Total"];
+    [totalLabel setPosition:CGPointMake(rect.origin.x / 2.f, y_off)];
+    [totalLabel setFontColor:[UIColor blackColor]];
+    [totalLabel setAlpha:0.f];
+    [self addChild:totalLabel];
+    totalScoreLabel = [SKLabelNode labelNodeWithFontNamed:@"AvenirNext-Bold"];
+    [totalScoreLabel setText:@"0"];
+    [totalScoreLabel setPosition:CGPointMake(-rect.origin.x / 1.25f, [totalLabel position].y)];
+    [totalScoreLabel setFontColor:[UIColor blackColor]];
+    [totalScoreLabel setAlpha:0.f];
+    [self addChild:totalScoreLabel];
+    
+    turnLabel = [SKLabelNode labelNodeWithFontNamed:@"AvenirNext-Bold"];
+    [turnLabel setText:@"Turn 1"];
+    [turnLabel setPosition:CGPointMake(rect.origin.x / 1.25f, -scorecardY + 20.f)];
+    [turnLabel setAlpha:0.f];
+    [self addChild:turnLabel];
+    
     scorecardVisible = NO;
     
     for (int i = 0; i < FIVE; ++i)
@@ -116,7 +156,6 @@ static NSString* rndSfx(char t, int max) {
 -(void)touchDownAtPoint:(CGPoint)pos {}
 -(void)touchMovedToPoint:(CGPoint)pos {}
 -(void)touchUpAtPoint:(CGPoint)pos {}
-
 -(void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)e {
     for (UITouch *t in touches) {
         BOOL valid = NO;
@@ -235,6 +274,12 @@ static NSString* rndSfx(char t, int max) {
 
 -(void)showScorecard {
     [scorecardCard runAction:[SKAction fadeInWithDuration:.5f]];
+    [scorecardLine runAction:[SKAction fadeInWithDuration:.5f]];
+    [turnLabel runAction:[SKAction fadeInWithDuration:.5f]];
+    [bonusLabel runAction:[SKAction fadeInWithDuration:.5f]];
+    [bonusScoreLabel runAction:[SKAction fadeInWithDuration:.5f]];
+    [totalLabel runAction:[SKAction fadeInWithDuration:.5f]];
+    [totalScoreLabel runAction:[SKAction fadeInWithDuration:.5f]];
     for (int i = 0; i < nScoreNames * 2; i++)
         [scorecardLabels[i] runAction:[SKAction fadeInWithDuration:.5f]];
     scorecardVisible = YES;
@@ -242,6 +287,12 @@ static NSString* rndSfx(char t, int max) {
 
 -(void)hideScorecard {
     [scorecardCard runAction:[SKAction fadeOutWithDuration:.5f]];
+    [scorecardLine runAction:[SKAction fadeOutWithDuration:.5f]];
+    [turnLabel runAction:[SKAction fadeOutWithDuration:.5f]];
+    [bonusLabel runAction:[SKAction fadeOutWithDuration:.5f]];
+    [bonusScoreLabel runAction:[SKAction fadeOutWithDuration:.5f]];
+    [totalLabel runAction:[SKAction fadeOutWithDuration:.5f]];
+    [totalScoreLabel runAction:[SKAction fadeOutWithDuration:.5f]];
     for (int i = 0; i < nScoreNames * 2; i++)
         [scorecardLabels[i] runAction:[SKAction fadeOutWithDuration:.5f]];
     scorecardVisible = NO;
@@ -249,7 +300,8 @@ static NSString* rndSfx(char t, int max) {
 
 -(BOOL)selectingInitFunc {
     [cup setPosition:CGPointMake(0.f, 0.f)];
-    [nextRollBtn runAction:[SKAction fadeInWithDuration:.5f]];
+    if (turn < 2)
+        [nextRollBtn runAction:[SKAction fadeInWithDuration:.5f]];
     [scorecardBtn runAction:[SKAction fadeInWithDuration:.5f]];
     [self updateScorecard];
     [self showScorecard];
@@ -515,6 +567,7 @@ static NSString* rndSfx(char t, int max) {
                 [hiddenScorecard reset];
                 [scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
                     self->turn++;
+                    [self->turnLabel setText:[NSString stringWithFormat:@"Turn %d", self->turn + 1]];
                     self->nextStateFlag = YES;
                 }];
                 break;

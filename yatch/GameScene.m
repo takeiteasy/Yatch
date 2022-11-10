@@ -632,6 +632,8 @@ static NSString* rndSfx(char t, int max) {
                 turn = 0;
                 [turnLabel setText:[NSString stringWithFormat:@"Turn %d", turn + 1]];
                 [totalScoreLabel setText:[NSString stringWithFormat:@"%d", [scorecard scoreTotal]]];
+                if ([scorecard bonusAchieved])
+                    [bonusScoreLabel setText:@"35"];
                 for (int i = 0; i < FIVE; i++)
                     diceSelected[i] = nil;
                 nSelectedDice = 0;

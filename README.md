@@ -14,7 +14,7 @@ An iOS Yatch dice game using SpriteKit. [Poker Dice](https://en.wikipedia.org/wi
  
 ## TODO
 
-- [ ] Bonus score (63 points in 1-6 categories)
+- [X] Bonus score (63 points in 1-6 categories)
 - [ ] Menu scene
 - [ ] Highscore
 - [ ] More sound effects

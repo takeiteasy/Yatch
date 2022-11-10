@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5ED8B261291D6B92006EC8AF /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5ED8B260291D6B92006EC8AF /* README.md */; };
 		883F563F2700FDDA001AD463 /* Die.m in Sources */ = {isa = PBXBuildFile; fileRef = 883F563E2700FDDA001AD463 /* Die.m */; };
 		889D36CF272E8E2F00953B8F /* Scorecard.m in Sources */ = {isa = PBXBuildFile; fileRef = 889D36CE272E8E2F00953B8F /* Scorecard.m */; };
 		88AF2E5126F71E0000E5F0A6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AF2E5026F71E0000E5F0A6 /* AppDelegate.m */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5ED8B260291D6B92006EC8AF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		883F563D2700FDDA001AD463 /* Die.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Die.h; sourceTree = "<group>"; };
 		883F563E2700FDDA001AD463 /* Die.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Die.m; sourceTree = "<group>"; };
 		889D36CD272E8E2F00953B8F /* Scorecard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scorecard.h; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 		88AF2E4E26F71E0000E5F0A6 /* yatch */ = {
 			isa = PBXGroup;
 			children = (
+				5ED8B260291D6B92006EC8AF /* README.md */,
 				88DAB56C27138A2E006E9F2E /* res */,
 				88E1EC13270A3B65002AD780 /* base */,
 				88AF2E5626F71E0000E5F0A6 /* GameScene.h */,
@@ -162,6 +165,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5ED8B261291D6B92006EC8AF /* README.md in Resources */,
 				88DAB56E2715F768006E9F2E /* res in Resources */,
 				88AF2E5E26F71E0000E5F0A6 /* Main.storyboard in Resources */,
 				88E1EC17270A3DD8002AD780 /* GameScene.sks in Resources */,

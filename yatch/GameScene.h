@@ -46,9 +46,8 @@ enum eventType {
     Spritesheet *diceAtlas;
     Die *dice[FIVE], *diceSelected[FIVE];
     SKSpriteNode *cup, *nextRollBtn, *scorecardBtn;
-    SKShapeNode *scorecardCard, *scorecardBoxes[nScoreNames * 2];
     SKLabelNode *scorecardLabels[nScoreNames * 2];
-    SKShapeNode *boundaries;
+    SKShapeNode *boundaries, *scorecardCard;
     Scorecard *scorecard, *hiddenScorecard;
     BOOL scorecardVisible;
     CFTimeInterval lastTimeInterval;

@@ -8,8 +8,6 @@
 
 #import "GameScene.h"
 
-#define M_PHI 1.618033988749895f
-
 static unsigned int dieRoll() {
     return arc4random_uniform(6);
 }
@@ -80,7 +78,6 @@ static NSString* rndSfx(char t, int max) {
     scorecard = [[Scorecard alloc] init];
     hiddenScorecard = [[Scorecard alloc] init];
     const int boxHeight = 40.f;
-    const int boxWidth = boxHeight * M_PHI;
     int cardHeight = boxHeight * nScoreNames + ((nScoreNames + 1) * 20);
     float scorecardY = -(cardHeight / 2.f);
     scorecardCard = [SKShapeNode shapeNodeWithRect:CGRectMake(rect.origin.x, scorecardY, rect.size.width, cardHeight)
@@ -89,45 +86,23 @@ static NSString* rndSfx(char t, int max) {
     [scorecardCard setAlpha:0.f];
     [self addChild:scorecardCard];
     
-    int longestWidth = 0;
-    for (int i = 0, y_off = scorecardY + boxHeight - 5; i < nScoreNames * 2; ++i) {
+    for (int i = 0, y_off = -scorecardY - boxHeight; i < nScoreNames * 2; ++i) {
         if (i < nScoreNames) {
-            scorecardBoxes[i] = [SKShapeNode shapeNodeWithRectOfSize:CGSizeMake(boxWidth, boxHeight)];
-            [scorecardBoxes[i] setPosition:CGPointMake(-rect.origin.x - boxWidth / 2.f, y_off)];
-            y_off += boxHeight + 20;
-            [scorecardBoxes[i] setStrokeColor:[UIColor blackColor]];
-            [scorecardBoxes[i] setLineWidth:1];
-            [scorecardBoxes[i] setAlpha:0.f];
-//            [self addChild:scorecardBoxes[i]];
-            
-            scorecardLabels[i] = [SKLabelNode labelNodeWithText:scoreNames[nScoreNames - 1 - i]];
+            scorecardLabels[i] = [SKLabelNode labelNodeWithText:scoreNames[i]];
+            [scorecardLabels[i] setPosition:CGPointMake(rect.origin.x / 2.f, y_off)];
+            y_off -= [scorecardLabels[i] frame].size.height + boxHeight / 2.f;
             [scorecardLabels[i] setFontColor:[UIColor blackColor]];
-            int w = [scorecardLabels[i] frame].size.width;
-            if (w > longestWidth)
-                longestWidth = w;
             [scorecardLabels[i] setAlpha:0.f];
             [self addChild:scorecardLabels[i]];
         } else {
-            scorecardBoxes[i] = [SKShapeNode shapeNodeWithRectOfSize:CGSizeMake(rect.size.width - 40, 1)];
-            [scorecardBoxes[i] setPosition:CGPointMake(6.f, [scorecardBoxes[i - nScoreNames] position].y - boxHeight / 2.f)];
-            [scorecardBoxes[i] setLineWidth:0];
-            [scorecardBoxes[i] setFillColor:[UIColor blackColor]];
-            [scorecardBoxes[i] setAlpha:0.f];
-//            [self addChild:scorecardBoxes[i]];
-            
             scorecardLabels[i] = [SKLabelNode labelNodeWithFontNamed:@"AvenirNext-Bold"];
+            [scorecardLabels[i] setPosition:CGPointMake(-rect.origin.x / 1.25f, [scorecardLabels[i - nScoreNames] position].y)];
             [scorecardLabels[i] setText:@""];
             [scorecardLabels[i] setFontColor:[UIColor blackColor]];
             [scorecardLabels[i] setAlpha:0.f];
             [self addChild:scorecardLabels[i]];
 
         }
-    }
-    for (int i = 0, x_off = longestWidth - 40; i < nScoreNames * 2; ++i) {
-        if (i < nScoreNames)
-            [scorecardLabels[i] setPosition:CGPointMake(-x_off, [scorecardBoxes[i] position].y - 10)];
-        else
-            [scorecardLabels[i] setPosition:CGPointMake([scorecardBoxes[i - nScoreNames] position].x, [scorecardLabels[nScoreNames - 1 - (i - nScoreNames)] position].y - 2)];
     }
     scorecardVisible = NO;
     
@@ -260,19 +235,15 @@ static NSString* rndSfx(char t, int max) {
 
 -(void)showScorecard {
     [scorecardCard runAction:[SKAction fadeInWithDuration:.5f]];
-    for (int i = 0; i < nScoreNames * 2; i++) {
+    for (int i = 0; i < nScoreNames * 2; i++)
         [scorecardLabels[i] runAction:[SKAction fadeInWithDuration:.5f]];
-        [scorecardBoxes[i] runAction:[SKAction fadeInWithDuration:.5f]];
-    }
     scorecardVisible = YES;
 }
 
 -(void)hideScorecard {
     [scorecardCard runAction:[SKAction fadeOutWithDuration:.5f]];
-    for (int i = 0; i < nScoreNames * 2; i++) {
+    for (int i = 0; i < nScoreNames * 2; i++)
         [scorecardLabels[i] runAction:[SKAction fadeOutWithDuration:.5f]];
-        [scorecardBoxes[i] runAction:[SKAction fadeOutWithDuration:.5f]];
-    }
     scorecardVisible = NO;
 }
 
@@ -523,6 +494,8 @@ static NSString* rndSfx(char t, int max) {
             }
             
             if ([nextRollBtn containsPoint:[t locationInNode:self]]) {
+                if (turn >= 2 || nSelectedDice == FIVE)
+                    break;
                 if (scorecardVisible)
                     [self hideScorecard];
                 [nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];

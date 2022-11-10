@@ -50,6 +50,7 @@ enum eventType {
     SKLabelNode *bonusLabel, *bonusScoreLabel, *totalLabel, *totalScoreLabel;
     SKShapeNode *boundaries, *scorecardCard, *scorecardLine;
     SKShapeNode *scorecardBoxes[nScoreNames];
+    SKAudioNode *bgMusic;
     Scorecard *scorecard, *hiddenScorecard;
     BOOL scorecardVisible;
     CFTimeInterval lastTimeInterval;

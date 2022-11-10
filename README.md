@@ -39,8 +39,10 @@ At the start of a round you roll 5 dice, after rolling you can choose to save di
 ## Assets
 
  - Dice sprites - [kicked-in-teeth](https://kicked-in-teeth.itch.io/dice-roll) (CC-by-sa)
- - Notepad + Pencil icon - [vectorpixelstar](https://vectorpixelstar.itch.io/1-bit-icons-part-2) (CC BY-ND 4.0)
- - Everything else made by myself
+ - Notepad, Pencil, back icons - [vectorpixelstar](https://vectorpixelstar.itch.io/1-bit-icons-part-2) (CC BY-ND 4.0)
+ - Sound effects - [kenney.nl](https://www.kenney.nl/assets/interface-sounds) (CC0 1.0 Universal)
+ - Music - [gooseninja](https://gooseninja.itch.io/minimalistc-loops) (CC?)
+ - Cup sprite and dice sound effects done myself
  
 ## TODO
 
@@ -48,8 +50,10 @@ At the start of a round you roll 5 dice, after rolling you can choose to save di
 - [X] ~~Menu scene~~
 - [X] ~~Highscore tracking~~
 - [ ] Quit button (return to menu)
-- [ ] More sound effects + music
+- [X] ~~More sound effects + music~~
 - [ ] Toggle music/sfx buttons
+- [ ] Volume sliders for music/sfx
+- [ ] App icon
 - [X] ~~How to play/rules section~~
 
 ## License

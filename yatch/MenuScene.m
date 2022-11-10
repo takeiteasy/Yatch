@@ -70,6 +70,8 @@
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
   for (UITouch *t in touches) {
       if ([playButton containsPoint:[t locationInNode:self]]) {
+          [self runAction:[SKAction playSoundFileNamed:@"res/start.caf"
+                                     waitForCompletion:NO]];
           GameScene *scene = (GameScene*)[SKScene nodeWithFileNamed:@"GameScene"];
           [scene setScaleMode:SKSceneScaleModeAspectFill];
           [[self view] presentScene:scene

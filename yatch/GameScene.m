@@ -39,8 +39,10 @@ static NSString* rndSfx(char t, int max) {
     [[self physicsWorld] setGravity:CGVectorMake(0.f, -9.81f)];
     contactQueue = [NSMutableArray array];
     [[self physicsWorld] setContactDelegate:self];
+    
     diceAtlas = [[Spritesheet alloc] initWithTextureNamed:@"dice"
                                                     Width:16];
+    
     lastTimeInterval = CACurrentMediaTime();
     nextStateFlag = NO;
     
@@ -151,6 +153,12 @@ static NSString* rndSfx(char t, int max) {
     [self addChild:turnLabel];
     
     scorecardVisible = NO;
+    
+    bgMusic = [[SKAudioNode alloc] initWithFileNamed:@"res/loop.caf"];
+    [bgMusic setAutoplayLooped:YES];
+    [bgMusic runAction:[SKAction changeVolumeTo:0.1
+                                       duration:0.0]];
+    [self addChild:bgMusic];
     
     for (int i = 0; i < FIVE; ++i)
         diceSelected[i] = nil;
@@ -550,6 +558,8 @@ static NSString* rndSfx(char t, int max) {
             break;
         case touchEnded:
             if ([scorecardBtn containsPoint:[t locationInNode:self]]) {
+                [self runAction:[SKAction playSoundFileNamed:@"res/click.caf"
+                                           waitForCompletion:NO]];
                 if (scorecardVisible)
                     [self hideScorecard];
                 else
@@ -558,8 +568,13 @@ static NSString* rndSfx(char t, int max) {
             }
             
             if ([nextRollBtn containsPoint:[t locationInNode:self]]) {
-                if (turn >= 2 || nSelectedDice == FIVE)
+                if (turn >= 2 || nSelectedDice == FIVE) {
+                    [self runAction:[SKAction playSoundFileNamed:@"res/error.caf"
+                                               waitForCompletion:NO]];
                     break;
+                }
+                [self runAction:[SKAction playSoundFileNamed:@"res/click.caf"
+                                           waitForCompletion:NO]];
                 if (scorecardVisible)
                     [self hideScorecard];
                 [nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];
@@ -586,6 +601,8 @@ static NSString* rndSfx(char t, int max) {
             for (int i = 0; i < FIVE; ++i) {
                 if (![dice[i] containsPoint:[t locationInNode:self]])
                     continue;
+                [self runAction:[SKAction playSoundFileNamed:@"res/click.caf"
+                                           waitForCompletion:NO]];
                 static const float speed = .1f;
                 if ([dice[i] selected]) {
                     [dice[i] runAction:[SKAction scaleToSize:CGSizeMake(16.f * DIESCALE, 16.f * DIESCALE)
@@ -598,6 +615,7 @@ static NSString* rndSfx(char t, int max) {
                             break;
                         }
                     nSelectedDice--;
+                    return NO;
                 } else {
                     [dice[i] setSelected:YES];
                     static const float offset = (16.f * DIESCALE * 2.5f + (4 * DIESPACE));
@@ -617,18 +635,37 @@ static NSString* rndSfx(char t, int max) {
                                                       duration:speed]];
                     [dice[i] disable];
                     nSelectedDice++;
+                    return NO;
                 }
-                break;
             }
             
             for (int i = 0; i < nScoreNames; i++) {
                 if (![scorecardBoxes[i] containsPoint:[t locationInNode:self]])
                     continue;
                 NSString *name = scoreNames[i];
-                if ([scorecard getScore:name] != -1)
-                    continue;
+                if ([scorecard getScore:name] != -1) {
+                    [self runAction:[SKAction playSoundFileNamed:@"res/error.caf"
+                                               waitForCompletion:NO]];
+                    return NO;
+                }
                 int v = [hiddenScorecard getScore:name];
+                if (v == 50)
+                    [self runAction:[SKAction playSoundFileNamed:@"res/win.caf"
+                                               waitForCompletion:NO]];
+                else if (v >= 30)
+                    [self runAction:[SKAction playSoundFileNamed:@"res/start.caf"
+                                               waitForCompletion:NO]];
+                else
+                    [self runAction:[SKAction playSoundFileNamed:@"res/switch.caf"
+                                               waitForCompletion:NO]];
+                BOOL bonusAchievedLast = [scorecard bonusAchieved];
                 [scorecard setScore:name withValue:v];
+                if (!bonusAchievedLast && [scorecard bonusAchieved]) {
+                    [self runAction:[SKAction playSoundFileNamed:@"res/start.caf"
+                                               waitForCompletion:NO]];
+                    [self runAction:[SKAction playSoundFileNamed:@"res/wow.caf"
+                                               waitForCompletion:NO]];
+                }
                 turn = 0;
                 [turnLabel setText:[NSString stringWithFormat:@"Turn %d", turn + 1]];
                 [totalScoreLabel setText:[NSString stringWithFormat:@"%d", [scorecard scoreTotal]]];
@@ -647,9 +684,14 @@ static NSString* rndSfx(char t, int max) {
                 if (![scorecard isFull])
                     [self hideScorecard];
                 else {
+                    [self runAction:[SKAction playSoundFileNamed:@"res/win.caf"
+                                               waitForCompletion:NO]];
                     int highscore = [[[NSUserDefaults standardUserDefaults] stringForKey:@"highscore"] intValue];
                     if ([scorecard scoreTotal] > highscore) {
-                        [[NSUserDefaults standardUserDefaults] setInteger:[scorecard scoreTotal] forKey:@"highscore"];
+                        [self runAction:[SKAction playSoundFileNamed:@"res/wow.caf"
+                                                   waitForCompletion:NO]];
+                        [[NSUserDefaults standardUserDefaults] setInteger:[scorecard scoreTotal]
+                                                                   forKey:@"highscore"];
                         [[NSUserDefaults standardUserDefaults] synchronize];
                     }
                     blockActions = YES;

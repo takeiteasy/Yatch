@@ -654,7 +654,7 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                             diceSelected[j] = dice[i];
                             break;
                         }
-                    [dice[i] runAction:[SKAction moveTo:CGPointMake(DIEPOSX(j), [[UIScreen mainScreen] bounds].size.height / 1.65f)
+                    [dice[i] runAction:[SKAction moveTo:CGPointMake(DIEPOSX(j), [[UIScreen mainScreen] bounds].size.height / 1.5f)
                                                duration:speed]];
                     [dice[i] runAction:[SKAction scaleBy:1.5f
                                                 duration:speed]];

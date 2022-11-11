@@ -33,7 +33,7 @@
 		883F563E2700FDDA001AD463 /* Die.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Die.m; sourceTree = "<group>"; };
 		889D36CD272E8E2F00953B8F /* Scorecard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scorecard.h; sourceTree = "<group>"; };
 		889D36CE272E8E2F00953B8F /* Scorecard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Scorecard.m; sourceTree = "<group>"; };
-		88AF2E4C26F71E0000E5F0A6 /* yatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = yatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		88AF2E4C26F71E0000E5F0A6 /* Yatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88AF2E4F26F71E0000E5F0A6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		88AF2E5026F71E0000E5F0A6 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		88AF2E5626F71E0000E5F0A6 /* GameScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 		88AF2E4D26F71E0000E5F0A6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				88AF2E4C26F71E0000E5F0A6 /* yatch.app */,
+				88AF2E4C26F71E0000E5F0A6 /* Yatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,9 +119,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		88AF2E4B26F71E0000E5F0A6 /* yatch */ = {
+		88AF2E4B26F71E0000E5F0A6 /* Yatch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 88AF2E6926F71E0100E5F0A6 /* Build configuration list for PBXNativeTarget "yatch" */;
+			buildConfigurationList = 88AF2E6926F71E0100E5F0A6 /* Build configuration list for PBXNativeTarget "Yatch" */;
 			buildPhases = (
 				88AF2E4826F71E0000E5F0A6 /* Sources */,
 				88AF2E4926F71E0000E5F0A6 /* Frameworks */,
@@ -131,9 +131,9 @@
 			);
 			dependencies = (
 			);
-			name = yatch;
+			name = Yatch;
 			productName = yatch;
-			productReference = 88AF2E4C26F71E0000E5F0A6 /* yatch.app */;
+			productReference = 88AF2E4C26F71E0000E5F0A6 /* Yatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -163,7 +163,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				88AF2E4B26F71E0000E5F0A6 /* yatch */,
+				88AF2E4B26F71E0000E5F0A6 /* Yatch */,
 			);
 		};
 /* End PBXProject section */
@@ -387,7 +387,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		88AF2E6926F71E0100E5F0A6 /* Build configuration list for PBXNativeTarget "yatch" */ = {
+		88AF2E6926F71E0100E5F0A6 /* Build configuration list for PBXNativeTarget "Yatch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				88AF2E6A26F71E0100E5F0A6 /* Debug */,

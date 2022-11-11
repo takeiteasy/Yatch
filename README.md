@@ -53,7 +53,7 @@ At the start of a round you roll 5 dice, after rolling you can choose to save di
 - [X] ~~More sound effects + music~~
 - [ ] Toggle music/sfx buttons
 - [ ] Volume sliders for music/sfx
-- [ ] App icon
+- [X] ~~App icon~~
 - [X] ~~How to play/rules section~~
 
 ## License

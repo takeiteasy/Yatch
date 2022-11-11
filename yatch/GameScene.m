@@ -8,14 +8,6 @@
 
 #import "GameScene.h"
 
-static unsigned int dieRoll() {
-    return arc4random_uniform(6);
-}
-
-static float lerp(float a, float b, float f) {
-    return a + f * (b - a);
-}
-
 static enum stateCode transitions[] = {
 #define X(a) a,
     STATES
@@ -29,10 +21,6 @@ static int nTransitions = sizeof(transitions) / sizeof(transitions[0]);
 
 static const u_int32_t dieCategory  = 0x1 << 0;
 static const u_int32_t edgeCategory = 0x1 << 1;
-
-static NSString* rndSfx(char t, int max) {
-    return [NSString stringWithFormat:@"res/%c%d.caf", t, arc4random_uniform(max) ];
-}
 
 @implementation GameScene
 -(void)didMoveToView:(SKView*)view {
@@ -358,12 +346,6 @@ static NSString* rndSfx(char t, int max) {
     }];
 }
 
--(NSArray*)sortedDice {
-    return [[NSMutableArray arrayWithObjects:dice
-                                       count:FIVE] sortedArrayUsingDescriptors: @[[[NSSortDescriptor alloc] initWithKey:@"value"
-                                                                                                              ascending:YES]]];
-}
-
 -(int)calcScore:(int)hand {
     int score = 0;
     switch (hand) {
@@ -400,75 +382,48 @@ static NSString* rndSfx(char t, int max) {
                 }
             }
             break;
-        case 8: { // Full house
-            NSMutableDictionary *d = [NSMutableDictionary dictionary];
-            for (int i = 0; i < FIVE; i++) {
-                NSString *key = [@([dice[i] value]) stringValue];
-                if ([d objectForKey:key])
-                    d[key] = @([d[key] intValue] + 1);
-                else
-                    d[key] = @1;
-            }
-            switch ([[d allKeys] count]) {
-                case 1:
-                    for (int i = 0; i < FIVE; i++)
-                        score += [dice[i] value];
-                    break;
-                case 2: {
+        case 8: // Full house
+            if ([sortedDice count] <= 2)
+                for (int i = 0; i < FIVE; i++)
+                    score += [dice[i] value];
+            break;
+        case 9: // Small straight
+            if ([sortedDice count] >= 4) {
+                for (int i = 0; i < [sortedDice count]; i++) {
                     BOOL y = YES;
-                    for (id key in d) {
-                        int v = [[d objectForKey:key] intValue];
-                        if (v == 4 || v == 1) {
+                    int v = [sortedDice[i] intValue];
+                    int k = 0;
+                    for (int j = i + 1, n = v + 1; j < [sortedDice count]; j++, n++, k++) {
+                        if ([sortedDice[j] intValue] != n) {
                             y = NO;
                             break;
                         }
                     }
-                    if (y)
-                        for (int i = 0; i < FIVE; i++)
-                            score += [dice[i] value];
-                    break;
+                    if (y && k >= 3) {
+                        score = 15;
+                        break;
+                    }
                 }
-                default:
-                    break;
             }
             break;
-        }
-        case 9: { // Small straight
-            NSArray *sorted = [self sortedDice];
-            BOOL y = YES;
-            for (int i = 0, j = 1; i < FIVE; i++, j++)
-                if ([(Die*)sorted[i] value] != j) {
-                    y = NO;
-                    break;
+        case 10: // Large straight
+            if ([sortedDice count] == FIVE) {
+                BOOL y = YES;
+                int v = [sortedDice[0] intValue];
+                for (int i = 1, n = v + 1; i < FIVE; i++, n++) {
+                    if ([sortedDice[i] intValue] != n) {
+                        y = NO;
+                        break;
+                    }
                 }
-            if (y)
-                score = 15;
+                if (y)
+                    score = 30;
+            }
             break;
-        }
-        case 10: { // Large straight
-            NSArray *sorted = [self sortedDice];
-            BOOL y = YES;
-            for (int i = 0, j = 2; i < FIVE; i++, j++)
-                if ([(Die*)sorted[i] value] != j) {
-                    y = NO;
-                    break;
-                }
-            if (y)
-                score = 30;
-            break;
-        }
-        case 11: { // Yatch
-            int v = [dice[0] value];
-            BOOL y = YES;
-            for (int i = 1; i < FIVE; i++)
-                if ([dice[i] value] != v) {
-                    y = NO;
-                    break;
-                }
-            if (y)
+        case 11: // Yatch
+            if ([sortedDice count] == 1)
                 score = 50;
             break;
-        }
         default:
             abort();
     }
@@ -476,6 +431,18 @@ static NSString* rndSfx(char t, int max) {
 }
 
 -(void)updateScorecard {
+    NSArray *sorted = [[NSMutableArray arrayWithObjects:dice
+                                                  count:FIVE] sortedArrayUsingDescriptors: @[[[NSSortDescriptor alloc] initWithKey:@"value"
+                                                                                                                         ascending:YES]]];
+    sortedDice = [NSMutableArray array];
+    for (Die* d in sorted) {
+        int v = [d value];
+        if (![sortedDice containsObject:@(v)])
+            [sortedDice addObject:@(v)];
+    }
+    for (int i = 0; i < [sortedDice count]; i++)
+        printf("%d\n", [sortedDice[i] intValue]);
+    
     for (int i = 0; i < nScoreNames; ++i) {
         int v = [scorecard getScore:[scorecardLabels[i] text]];
         if (v > -1) {
@@ -627,7 +594,7 @@ static NSString* rndSfx(char t, int max) {
                             diceSelected[j] = dice[i];
                             break;
                         }
-                    [dice[i] runAction:[SKAction moveTo:CGPointMake(DIEPOSX(j), [[UIScreen mainScreen] bounds].size.height / 1.5f)
+                    [dice[i] runAction:[SKAction moveTo:CGPointMake(DIEPOSX(j), [[UIScreen mainScreen] bounds].size.height / 1.75f)
                                                duration:speed]];
                     [dice[i] runAction:[SKAction scaleBy:1.5f
                                                 duration:speed]];
@@ -710,6 +677,10 @@ static NSString* rndSfx(char t, int max) {
     return NO;
 }
 
+-(NSString*)rndSfx:(char)t withMax:(int)max {
+    return [NSString stringWithFormat:@"res/%c%d.caf", t, arc4random_uniform(max) ];
+}
+
 -(enum retCode)prerollUpdateFunc:(CFTimeInterval)t {
     static float tickDelayA = 0.f;
     static float tickDelayB = 0.f;
@@ -718,13 +689,13 @@ static NSString* rndSfx(char t, int max) {
     
     if (blockActions) {
         if (tickCounterA >= tickDelayA) {
-            [self runAction:[SKAction playSoundFileNamed:rndSfx('c', 3)
+            [self runAction:[SKAction playSoundFileNamed:[self rndSfx:'c' withMax:3]
                                        waitForCompletion:NO]];
             tickDelayA = ((float)arc4random() / UINT32_MAX) * .25f;
             tickCounterA = 0.f;
         }
         if (tickCounterB >= tickDelayB) {
-            [self runAction:[SKAction playSoundFileNamed:rndSfx('d', 7)
+            [self runAction:[SKAction playSoundFileNamed:[self rndSfx:'d' withMax:7]
                                        waitForCompletion:NO]];
             tickDelayB = ((float)arc4random() / UINT32_MAX) * .15f;
             tickCounterB = 0.f;
@@ -742,6 +713,10 @@ static NSString* rndSfx(char t, int max) {
     return ret;
 }
 
+-(unsigned int)dieRoll {
+    return arc4random_uniform(6);
+}
+
 -(enum retCode)rollingUpdateFunc:(CFTimeInterval)t {
     static float maxTime = 2.f;
     static float tickCounter = 0.f;
@@ -751,8 +726,8 @@ static NSString* rndSfx(char t, int max) {
     if (delayCounter > tickDelay) {
         for (int i = 0; i < FIVE; ++i)
             if (![dice[i] selected])
-                [dice[i] setTexture:[diceAtlas getClip:6 + dieRoll()]];
-        tickDelay = lerp(0.f, .25f, tickCounter / maxTime);
+                [dice[i] setTexture:[diceAtlas getClip:6 + [self dieRoll]]];
+        tickDelay = (tickCounter / maxTime) * .25f;
         delayCounter = 0.f;
     }
     
@@ -760,7 +735,7 @@ static NSString* rndSfx(char t, int max) {
         for (int i = 0; i < FIVE; ++i) {
             if ([dice[i] selected])
                 continue;
-            int v = dieRoll();
+            int v = [self dieRoll];
             [dice[i] setTexture:[diceAtlas getClip:v]];
             [dice[i] setValue:v + 1];
         }
@@ -839,11 +814,13 @@ static NSString* rndSfx(char t, int max) {
 -(void)handleContact:(SKPhysicsContact*)contact {
     if ([[contact bodyA] categoryBitMask] == dieCategory &&
         [[contact bodyB] categoryBitMask] == dieCategory)
-        [self runAction:[SKAction playSoundFileNamed:rndSfx('d', 7) waitForCompletion:NO]];
+        [self runAction:[SKAction playSoundFileNamed:[self rndSfx:'d' withMax:7]
+                                   waitForCompletion:NO]];
     else if (([[contact bodyA] categoryBitMask] == edgeCategory &&
               [[contact bodyB] categoryBitMask] == dieCategory) ||
              ([[contact bodyA] categoryBitMask] == dieCategory &&
               [[contact bodyB] categoryBitMask] == edgeCategory))
-        [self runAction:[SKAction playSoundFileNamed:rndSfx('e', 7) waitForCompletion:NO]];
+        [self runAction:[SKAction playSoundFileNamed:[self rndSfx:'e' withMax:7]
+                                   waitForCompletion:NO]];
 }
 @end

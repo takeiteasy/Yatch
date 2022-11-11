@@ -45,6 +45,7 @@ enum eventType {
 @interface GameScene : SKScene <SKPhysicsContactDelegate> {
     Spritesheet *diceAtlas;
     Die *dice[FIVE], *diceSelected[FIVE];
+    NSMutableArray *sortedDice;
     SKSpriteNode *cup, *nextRollBtn, *scorecardBtn;
     SKLabelNode *scorecardLabels[nScoreNames * 2], *turnLabel;
     SKLabelNode *bonusLabel, *bonusScoreLabel, *totalLabel, *totalScoreLabel;

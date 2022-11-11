@@ -24,8 +24,8 @@ At the start of a round you roll 5 dice, after rolling you can choose to save di
 - Choice: Sum of all dice (e.g. 1-2-5-6-3 = 17 points)
 - Four-of-a-kind: 4 of the same dice + extra die (e.g. 4-4-4-4-5 = 21 points, 1-2-3-4-5 = 0 points)
 - Full house: 3 of a kind + pair: (e.g. 3-3-3-2-2 = 13 points, 4-4-4-5-2 = 0 points)
-- Small straight: 1-5 run (1-2-3-4-5 = 15 points)
-- Large straight: 2-6 run (2-3-4-5-6 = 30 points)
+- Small straight: 4-dice run (1-2-3-4-1 = 15 points)
+- Large straight: 5-dice run (2-3-4-5-6 = 30 points)
 - Yatch: All dice same face (e.g. 1-1-1-1-1 = 50 points)
 - Bonus: Non-selectable category, achieved by gaining 63 points total in the numbered categories
 

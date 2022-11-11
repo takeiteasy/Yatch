@@ -708,9 +708,16 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                         self->dice[i] = nil;
                     }];
                 }
-                if (![scorecard isFull])
+                [cup setPosition:CGPointMake(0, 0)];
+                [cup setZRotation:0];
+                [nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];
+                if (![scorecard isFull]) {
                     [self hideScorecard];
-                else {
+                    [restartBtn runAction:[SKAction fadeOutWithDuration:.5f]];
+                    [scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
+                        self->nextStateFlag = YES;
+                    }];
+                } else {
                     [self runAction:[SKAction playSoundFileNamed:@"res/win.caf"
                                                waitForCompletion:NO]];
                     int highscore = [[[NSUserDefaults standardUserDefaults] stringForKey:@"highscore"] intValue];
@@ -724,15 +731,12 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                     blockActions = YES;
                     [turnLabel setText:@"Final score!"];
                     [self updateScorecard];
+                    [restartBtn runAction:[SKAction fadeInWithDuration:.5f]];
+                    [scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
+                        self->nextStateFlag = NO;
+                        self->blockActions = NO;
+                    }];
                 }
-                [cup setPosition:CGPointMake(0, 0)];
-                [cup setZRotation:0];
-                [nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];
-                [restartBtn runAction:[SKAction fadeInWithDuration:.5f]];
-                [scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
-                    self->nextStateFlag = NO;
-                    self->blockActions = NO;
-                }];
             }
             break;
     }

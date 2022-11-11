@@ -475,7 +475,7 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                     break;
                 }
                 case motionEnded:
-                    if (![scorecard isFull] && !blockActions)
+                    if (![scorecard isFull])
                         [self stopCupShake];
                     break;
             }

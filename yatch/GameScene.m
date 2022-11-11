@@ -431,13 +431,13 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                     BOOL y = YES;
                     int v = [sortedDice[i] intValue];
                     int k = 0;
-                    for (int j = i + 1, n = v + 1; j < [sortedDice count]; j++, n++, k++) {
+                    for (int j = i + 1, n = v + 1; j < [sortedDice count] && k < 3; j++, n++, k++) {
                         if ([sortedDice[j] intValue] != n) {
                             y = NO;
                             break;
                         }
                     }
-                    if (y && k >= 3) {
+                    if (y && k == 3) {
                         score = 15;
                         break;
                     }

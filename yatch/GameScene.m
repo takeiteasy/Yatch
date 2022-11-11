@@ -154,8 +154,8 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                                        duration:0.0]];
     [self addChild:bgMusic];
     
-    for (int i = 0; i < nScoreNames - 1; i++)
-        [scorecard setScore:scoreNames[i] withValue:0];
+//    for (int i = 0; i < nScoreNames - 1; i++)
+//        [scorecard setScore:scoreNames[i] withValue:0];
     
     for (int i = 0; i < FIVE; ++i)
         diceSelected[i] = nil;

@@ -154,8 +154,8 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                                        duration:0.0]];
     [self addChild:bgMusic];
     
-    for (int i = 0; i < nScoreNames - 1; i++)
-        [scorecard setScore:scoreNames[i] withValue:i];
+//    for (int i = 0; i < nScoreNames - 1; i++)
+//        [scorecard setScore:scoreNames[i] withValue:i];
     
     for (int i = 0; i < FIVE; ++i)
         diceSelected[i] = nil;
@@ -392,11 +392,39 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                 }
             }
             break;
-        case 8: // Full house
-            if ([sortedDice count] <= 2)
-                for (int i = 0; i < FIVE; i++)
-                    score += [dice[i] value];
+        case 8: { // Full house
+            NSMutableDictionary *d = [NSMutableDictionary dictionary];
+            for (int i = 0; i < FIVE; i++) {
+                NSString *key = [@([dice[i] value]) stringValue];
+                if ([d objectForKey:key])
+                    d[key] = @([d[key] intValue] + 1);
+                else
+                    d[key] = @1;
+            }
+            switch ([[d allKeys] count]) {
+                case 1:
+                    for (int i = 0; i < FIVE; i++)
+                        score += [dice[i] value];
+                    break;
+                case 2: {
+                    BOOL y = YES;
+                    for (id key in d) {
+                        int v = [[d objectForKey:key] intValue];
+                        if (v == 4 || v == 1) {
+                            y = NO;
+                            break;
+                        }
+                    }
+                    if (y)
+                        for (int i = 0; i < FIVE; i++)
+                            score += [dice[i] value];
+                    break;
+                }
+                default:
+                    break;
+            }
             break;
+        }
         case 9: // Small straight
             if ([sortedDice count] >= 4) {
                 for (int i = 0; i < [sortedDice count]; i++) {

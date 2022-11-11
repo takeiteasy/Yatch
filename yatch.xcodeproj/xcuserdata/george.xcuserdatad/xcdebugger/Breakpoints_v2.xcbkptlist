@@ -30,8 +30,8 @@
             filePath = "yatch/GameScene.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "692"
-            endingLineNumber = "692"
+            startingLineNumber = "720"
+            endingLineNumber = "720"
             landmarkName = "-selectingInputFunc:withEvent:withType:"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "yatch/GameScene.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "674"
-            endingLineNumber = "674"
+            startingLineNumber = "702"
+            endingLineNumber = "702"
             landmarkName = "-selectingInputFunc:withEvent:withType:"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "yatch/GameScene.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "401"
-            endingLineNumber = "401"
+            startingLineNumber = "429"
+            endingLineNumber = "429"
             landmarkName = "-calcScore:"
             landmarkType = "7">
          </BreakpointContent>

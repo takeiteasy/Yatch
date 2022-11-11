@@ -17,7 +17,7 @@ static int nTransitions = sizeof(transitions) / sizeof(transitions[0]);
 
 #define DIESCALE 4.f
 #define DIESPACE 20.f
-#define DIEPOSX(n) (-(offset - DIESPACE) + (DIESPACE * n) + n * inc)
+#define DIEPOSX(n) (-offset + (DIESPACE * n) + n * inc)
 
 static const u_int32_t dieCategory  = 0x1 << 0;
 static const u_int32_t edgeCategory = 0x1 << 1;
@@ -76,6 +76,12 @@ static const u_int32_t edgeCategory = 0x1 << 1;
     [scorecardBtn setAlpha:0.f];
     [scorecardBtn setPosition:CGPointMake(-rect.origin.x, -scorecardY + 50.f)];
     [self addChild:scorecardBtn];
+    
+    restartBtn = [SKSpriteNode spriteNodeWithImageNamed:@"back"];
+    [restartBtn setScale:2.5f];
+    [restartBtn setAlpha:0.f];
+    [restartBtn setPosition:CGPointMake(-rect.origin.x / 3.f, -scorecardY + 40.f)];
+    [self addChild:restartBtn];
     
     for (int i = 0; i < nScoreNames * 2; ++i) {
         if (i < nScoreNames) {
@@ -147,6 +153,9 @@ static const u_int32_t edgeCategory = 0x1 << 1;
     [bgMusic runAction:[SKAction changeVolumeTo:0.1
                                        duration:0.0]];
     [self addChild:bgMusic];
+    
+    for (int i = 0; i < nScoreNames - 1; i++)
+        [scorecard setScore:scoreNames[i] withValue:0];
     
     for (int i = 0; i < FIVE; ++i)
         diceSelected[i] = nil;
@@ -306,6 +315,7 @@ static const u_int32_t edgeCategory = 0x1 << 1;
     if (turn < 2)
         [nextRollBtn runAction:[SKAction fadeInWithDuration:.5f]];
     [scorecardBtn runAction:[SKAction fadeInWithDuration:.5f]];
+    [restartBtn runAction:[SKAction fadeInWithDuration:.5f]];
     [self updateScorecard];
     [self showScorecard];
     return YES;
@@ -557,11 +567,61 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                 [cup setPosition:CGPointMake(0, 0)];
                 [cup setZRotation:0];
                 [hiddenScorecard reset];
+                [restartBtn runAction:[SKAction fadeOutWithDuration:.5f]];
                 [scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
                     self->turn++;
                     [self->turnLabel setText:[NSString stringWithFormat:@"Turn %d", self->turn + 1]];
                     self->nextStateFlag = YES;
                 }];
+                break;
+            }
+            
+            if ([restartBtn containsPoint:[t locationInNode:self]]) {
+                [self runAction:[SKAction playSoundFileNamed:@"res/click.caf"
+                                           waitForCompletion:NO]];
+                UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"Restart"
+                                                                                message:@"Are You Sure Want to restart?"
+                                                                         preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* yesButton = [UIAlertAction
+                                            actionWithTitle:@"Yes"
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                    [self runAction:[SKAction playSoundFileNamed:@"res/start.caf"
+                                               waitForCompletion:NO]];
+                    [self->scorecard reset];
+                    self->turn = 0;
+                    [self hideScorecard];
+                    [self->nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];
+                    [self->restartBtn runAction:[SKAction fadeOutWithDuration:.5f]];
+                    for (int i = 0; i < FIVE; i++)
+                        self->diceSelected[i] = nil;
+                    self->nSelectedDice = 0;
+                    for (int i = 0; i < FIVE; i++) {
+                        [self->dice[i] runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
+                            self->dice[i].physicsBody = nil;
+                            [self->dice[i] removeFromParent];
+                            self->dice[i] = nil;
+                        }];
+                    }
+                    [self->cup setPosition:CGPointMake(0, 0)];
+                    [self->cup setZRotation:0];
+                    [self->scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
+                        self->state = preroll;
+                        [self prerollInitFunc];
+                    }];
+                }];
+                
+                UIAlertAction* noButton = [UIAlertAction actionWithTitle:@"Cancel"
+                                                                   style:UIAlertActionStyleDefault
+                                                                 handler:^(UIAlertAction * action) {
+                    [self runAction:[SKAction playSoundFileNamed:@"res/switch.caf"
+                                               waitForCompletion:NO]];
+                }];
+                [alert addAction:yesButton];
+                [alert addAction:noButton];
+                
+                [[[[self view] window] rootViewController] presentViewController:alert animated:YES completion:nil];
                 break;
             }
             
@@ -594,7 +654,7 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                             diceSelected[j] = dice[i];
                             break;
                         }
-                    [dice[i] runAction:[SKAction moveTo:CGPointMake(DIEPOSX(j), [[UIScreen mainScreen] bounds].size.height / 1.75f)
+                    [dice[i] runAction:[SKAction moveTo:CGPointMake(DIEPOSX(j), [[UIScreen mainScreen] bounds].size.height / 1.65f)
                                                duration:speed]];
                     [dice[i] runAction:[SKAction scaleBy:1.5f
                                                 duration:speed]];
@@ -668,8 +728,10 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                 [cup setPosition:CGPointMake(0, 0)];
                 [cup setZRotation:0];
                 [nextRollBtn runAction:[SKAction fadeOutWithDuration:.5f]];
+                [restartBtn runAction:[SKAction fadeInWithDuration:.5f]];
                 [scorecardBtn runAction:[SKAction fadeOutWithDuration:.5f] completion:^{
-                    self->nextStateFlag = YES;
+                    self->nextStateFlag = NO;
+                    self->blockActions = NO;
                 }];
             }
             break;

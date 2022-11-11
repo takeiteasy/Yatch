@@ -49,7 +49,7 @@ At the start of a round you roll 5 dice, after rolling you can choose to save di
 - [X] ~~Bonus score (63 points in 1-6 categories)~~
 - [X] ~~Menu scene~~
 - [X] ~~Highscore tracking~~
-- [ ] Quit button (return to menu)
+- [X] ~~Restart game button~~
 - [X] ~~More sound effects + music~~
 - [ ] Toggle music/sfx buttons
 - [ ] Volume sliders for music/sfx

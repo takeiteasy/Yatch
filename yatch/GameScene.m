@@ -380,7 +380,7 @@ static const u_int32_t edgeCategory = 0x1 << 1;
                 int v = [dice[i] value], n = 1, o = 0;
                 for (int j = 0; j < FIVE; j++) {
                     if (i == j)
-                        break;
+                        continue;
                     if ([dice[j] value] == v)
                         n++;
                     else
